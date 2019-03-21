@@ -1,0 +1,45 @@
+function get (url) {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          // const res = JSON.parse(xhr.responseText);
+          const res = xhr.responseText;
+          resolve(res);
+        } else {
+          reject(new Error('Get request failed. Returned status: ' + xhr.status));
+        }
+      } 
+    };
+
+    xhr.open('GET', url);
+    xhr.send();
+  });
+}
+
+async function main () {
+  const vueJSText = await get('https://cdn.jsdelivr.net/npm/vue');
+
+  let mainContent = document.getElementById('main-content');
+  let vueJS = document.createElement('script');
+  vueJS.innerText = vueJSText;
+  mainContent.appendChild(vueJS);
+  
+  let vueApp = document.createElement('div');
+  vueApp.id = 'app';
+  
+  vueApp.innerHTML = `<iframe
+  width="1000px" height="693px" 
+  :src="slides[currentSlideIndex].url" 
+  frameborder="0" style="border:0" 
+  allowfullscreen></iframe>`;
+  
+  let myScript = document.createElement('script');
+  myScript.innerText = `let vue=new Vue({el:"#app",data:{slides:[{name:"PD-P3",url:"https://datastudio.google.com/embed/reporting/1oDxCt2UdNffjnXcwKPtA1_ovjQMgQbjj/page/gFej",time:15},{name:"PD-DR",url:"https://datastudio.google.com/embed/reporting/1oDxCt2UdNffjnXcwKPtA1_ovjQMgQbjj/page/xcej",time:15},{name:"PD-ECR/ECN",url:"https://datastudio.google.com/embed/reporting/1oDxCt2UdNffjnXcwKPtA1_ovjQMgQbjj/page/Loej",time:15},{name:"MANU-H&S",url:"https://datastudio.google.com/embed/reporting/1ZUxXbaTiHLXjuMstMjehFIY72CTQsPXH/page/gFej",time:15},{name:"MANU-CPHU",url:"https://datastudio.google.com/embed/reporting/1ZUxXbaTiHLXjuMstMjehFIY72CTQsPXH/page/xcej",time:15},{name:"MANU-WSA",url:"https://datastudio.google.com/embed/reporting/1ZUxXbaTiHLXjuMstMjehFIY72CTQsPXH/page/Loej",time:15},{name:"MANU-RMD",url:"https://datastudio.google.com/embed/reporting/1ZUxXbaTiHLXjuMstMjehFIY72CTQsPXH/page/NSkj",time:8},{name:"LOGI-FGI",url:"https://datastudio.google.com/embed/reporting/19ELpjAdz3F2z8GnclDQ6M5edw0KTlFoJ/page/gFej",time:15},{name:"LOGI-OF",url:"https://datastudio.google.com/embed/reporting/19ELpjAdz3F2z8GnclDQ6M5edw0KTlFoJ/page/xcej",time:15},{name:"QUAL-CVI",url:"https://datastudio.google.com/embed/reporting/11YE1XWM02IsZNcar4mK4__cheNAtA5uH/page/gFej",time:15},{name:"QUAL-OBQ1",url:"https://datastudio.google.com/embed/reporting/11YE1XWM02IsZNcar4mK4__cheNAtA5uH/page/xcej",time:15},{name:"QUAL-OBQ2",url:"https://datastudio.google.com/embed/reporting/11YE1XWM02IsZNcar4mK4__cheNAtA5uH/page/od2j",time:15},{name:"QUAL-PPM",url:"https://datastudio.google.com/embed/reporting/11YE1XWM02IsZNcar4mK4__cheNAtA5uH/page/Loej",time:15},{name:"HR-TTF",url:"https://datastudio.google.com/embed/reporting/1lVgJUIQEkqLvXqJhS_LrGm7BXTHCJVMg/page/gFej",time:15},{name:"HR-PMP",url:"https://datastudio.google.com/embed/reporting/1lVgJUIQEkqLvXqJhS_LrGm7BXTHCJVMg/page/xcej",time:15}],currentSlideIndex:-1},watch:{currentSlideIndex:function(){this.currentSlideIndex>=this.slides.length?this.runSlideShow(!0):this.runSlideShow()}},mounted:function(){this.runSlideShow(!0)},methods:{runSlideShow:function(e=!1){e?this.currentSlideIndex=0:window.setTimeout(()=>{this.currentSlideIndex++},1e3*this.slides[this.currentSlideIndex].time)}}});`;
+  myScript.async = true;
+  
+  mainContent.appendChild(vueApp);
+  mainContent.appendChild(myScript);  
+}
+main();
